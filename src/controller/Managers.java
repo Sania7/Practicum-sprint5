@@ -1,14 +1,15 @@
 package controller;
 
 public class Managers {
-    private static InMemoryTasksManager defaultManager;
 
+    private Managers() {
+
+    }
     //Получение Менеджера задач по умолчанию
     public static InMemoryTasksManager getDefault(){
-        //Создать экземпляр если его ещё нет
-        if (defaultManager == null){
-            defaultManager = new InMemoryTasksManager();
-        }
-        return defaultManager;
+        return new InMemoryTasksManager();
+    }
+    public static HistoryManager getDefaultHistory() {
+        return new InMemoryHistoryManager();
     }
 }

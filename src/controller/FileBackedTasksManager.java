@@ -17,6 +17,7 @@ import java.util.List;
 public class FileBackedTasksManager extends InMemoryTasksManager {
     private Path saveFile;
 
+    public static final String FILE_HEADER = "ID,TYPE,NAME,STATUS,DESCRIPTION,EPIC";
     //Конструктор класса
     public FileBackedTasksManager(String saveFile){
         super();
@@ -25,6 +26,7 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
 
     //Метод для проверки работы менеджера
     public static void main(String[] args){
+
         FileBackedTasksManager manager  = new FileBackedTasksManager("save_tasks.txt");
         FileBackedTasksManager manager1 = new FileBackedTasksManager("save_tasks.txt");    //Менеджер для проверки загрузки из файла
 
@@ -95,8 +97,8 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
         List<String> lines = new ArrayList<>();
 
         //Подготовка данных
-        lines.add("ID,TYPE,NAME,STATUS,DESCRIPTION,EPIC");
-        for(Task task : super.taskList.values()){
+        lines.add(FILE_HEADER);
+        for(Task task : super.taskLists.values()){
             lines.add(task.toString());
         }
         lines.add("\n" + history.toString());
@@ -193,10 +195,10 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
         for (int i = 1; i < lines.size(); i++){     //В первой строке - заголовки
             if (lines.get(i).isEmpty()){            //После пустой строки - считвание истории
                 if (lines.size() > (i + 1)){
-                    Task task;
+
                     fm.history.clear();             //Очистка истории перед её загрузкой
                     for(Integer num : InMemoryHistoryManager.fromString(lines.get(i + 1))){
-                        task = fm.getTask(num);     //Обращение к задаче
+                        fm.getTask(num);     //Обращение к задаче
                     }
                 }
                 break;

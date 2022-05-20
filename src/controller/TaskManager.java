@@ -4,21 +4,21 @@ import base.Epic;
 import base.SubTask;
 import base.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface TaskManager {
     //Получение списка всех задач (Эпики + Задачи + Подзадачи).
-    HashMap<Integer, Task> getAllTasksList();
+    Map<Integer, Task> getAllTasksList();
 
     //Получение списка задач (Эпики + Задачи).
-    ArrayList<Task> getTasksList();
+    List<Task> getTasksList();
 
     //Получение списка всех Эпиков.
-    ArrayList<Task> getEpics();
+    List<Task> getEpics();
 
     //Получение списка всех подзадач определённого эпика.
-    ArrayList<SubTask> getSubTasks(Epic epic);
+    List<SubTask> getSubTasks(Epic epic);
 
     //Получение задачи по идентификатору.
     Task getTask(int num);
@@ -37,5 +37,5 @@ public interface TaskManager {
 
     //Возвращает последние 10 просмотренных задач.
     // (полученных через getTask(), изменённых updateTask() или удалённых delTask()).
-    ArrayList<Task> history();
+    List<Task> history();
 }
