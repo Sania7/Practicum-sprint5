@@ -4,7 +4,7 @@ import util.TaskType;
 
 public class SubTask extends Task {
     // ссылка на родителя Эпик
-    Epic epic;
+    private Epic epic;
 
     // конструктор
     public SubTask(Integer num, String name, String details, Epic epic) {

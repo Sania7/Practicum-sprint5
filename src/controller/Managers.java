@@ -2,11 +2,10 @@ package controller;
 
 public class Managers {
 
-    private Managers() {
-
-    }
+    private Managers() {}
     //Получение Менеджера задач по умолчанию
-    public static InMemoryTasksManager getDefault(){
+
+    public static TaskManager getDefault(){
         return new InMemoryTasksManager();
     }
     public static HistoryManager getDefaultHistory() {

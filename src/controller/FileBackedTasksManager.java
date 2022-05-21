@@ -101,7 +101,7 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
         for(Task task : super.taskLists.values()){
             lines.add(task.toString());
         }
-        lines.add("\n" + history.toString());
+        lines.add("\n" + getHistoryManager().toString());
 
         //Запись в файл
         try {
@@ -196,7 +196,7 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
             if (lines.get(i).isEmpty()){            //После пустой строки - считвание истории
                 if (lines.size() > (i + 1)){
 
-                    fm.history.clear();             //Очистка истории перед её загрузкой
+                    fm.getHistoryManager().remove(i);             //Очистка истории перед её загрузкой
                     for(Integer num : InMemoryHistoryManager.fromString(lines.get(i + 1))){
                         fm.getTask(num);     //Обращение к задаче
                     }

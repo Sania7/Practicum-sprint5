@@ -13,23 +13,26 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     //Добавление нового просмотра задачи в историю обращений (добавление/перенос в конец списка)
     @Override
-    public void add(Task task){
+    public void add(Task task) {
         Node<Task> l = last;    //Временное сохранение последнего элемента
         Node<Task> newNode = null;
 
-        //Если задача уже есть в списке - взять существующий узел
-        if (nodeIndex.containsKey(task.getNum())){
-            newNode = nodeIndex.get(task.getNum());
-            unlink(newNode);    //Выключение узла из списка перед манипуляциями
+        if (task == null) {
+            return;
         } else {
-            newNode = new Node<>(l, task, null);   //Создание нового узла
-            nodeIndex.put(task.getNum(), newNode);      //Вставка нового узла в индекс поиска
+            //Если задача уже есть в списке - взять существующий узел
+            if (nodeIndex.containsKey(task.getNum())) {
+                newNode = nodeIndex.get(task.getNum());
+                unlink(newNode);    //Выключение узла из списка перед манипуляциями
+            } else {
+                newNode = new Node<>(l, task, null);   //Создание нового узла
+                nodeIndex.put(task.getNum(), newNode);      //Вставка нового узла в индекс поиска
+            }
+
+            //Включение узла в конец списка
+            linkLast(newNode);
         }
-
-        //Включение узла в конец списка
-        linkLast(newNode);
     }
-
     //Удаление просмотра из истории
     @Override
     public void remove(int id){

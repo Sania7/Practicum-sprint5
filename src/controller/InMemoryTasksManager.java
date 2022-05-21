@@ -10,19 +10,18 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryTasksManager implements TaskManager {
-    protected Map<Integer, Task> taskLists;    //Список всех задач
-    protected InMemoryHistoryManager history;
+    protected Map<Integer, Task> taskLists = new HashMap<>();    //Список всех задач
+    //protected InMemoryHistoryManager history;
+    private HistoryManager historyManager = Managers.getDefaultHistory();
 
-    //Конструктор
-    public InMemoryTasksManager() {
-        taskLists = new HashMap<>();
-        history = new InMemoryHistoryManager();
+    public HistoryManager getHistoryManager() {
+        return historyManager;
     }
 
     //Получение списка всех задач (Эпики + Задачи + Подзадачи).
     @Override
     public Map<Integer, Task> getAllTasksList(){
-        return taskLists;
+        return new HashMap<>(taskLists);
     }
 
     //Получение списка задач верхнего уровня (Эпики + Задачи).
@@ -51,9 +50,6 @@ public class InMemoryTasksManager implements TaskManager {
     //Получение списка всех подзадач определённого Эпика.
     @Override
     public List<SubTask> getSubTasks(Epic epic){
-        for (SubTask subTask : epic.getSubTasks()) {
-            history.add(subTask);    //Сохранение обращения к Подзадачам в истории обращений
-        }
         return epic.getSubTasks();
     }
 
@@ -61,7 +57,7 @@ public class InMemoryTasksManager implements TaskManager {
     @Override
     public Task getTask(int num){
         //Сохранение обращения к задаче в истории обращений
-        history.add(taskLists.get(num));
+        historyManager.add(taskLists.get(num));
 
         return taskLists.get(num);
     }
@@ -81,6 +77,7 @@ public class InMemoryTasksManager implements TaskManager {
         taskLists.put(newTask.getNum(), newTask);    //Вставить Задачу в список менеджера
         if (newTask instanceof SubTask){
             ((SubTask)newTask).getEpic().getSubTasks().add((SubTask)newTask); //Присоединить Подзадачу к Эпику
+            ((SubTask) newTask).getEpic().getStatus(); // обновить статус Эпика
         }
     }
     //Обновление задачи любого типа по идентификатору. Новая версия объекта передаётся в виде параметра.
@@ -107,6 +104,7 @@ public class InMemoryTasksManager implements TaskManager {
             subTask.setEpic(((SubTask)oldTask).getEpic());          //Подключить к старому Эпику
             subTask.getEpic().getSubTasks().add(subTask);           //Добавить новую версию к Эпику
             subTask.getEpic().getSubTasks().remove(oldTask);        //Удалить из Эпика старую версию
+            ((SubTask) newTask).getEpic().getStatus();              // обновить статус Эпика
         }
     }
     //Удаление ранее добавленных задач — всех и по идентификатору.
@@ -114,22 +112,22 @@ public class InMemoryTasksManager implements TaskManager {
     public void delTask(Integer num){
         if (num == null){   //Если идентификатор пустой - удаляем всё
             taskLists.clear();
-            history.clear();
+            historyManager.remove(num);
         } else {
             Task delTask = getTask(num);                    //Получение экземпляра удаляемой задачи
             if (delTask instanceof SubTask){
                 //Подзадачу - удалить из Эпика
                 ((SubTask)delTask).getEpic().getSubTasks().remove(delTask);
-
+                ((SubTask) delTask).getEpic().getStatus();  // обновить статус Эпика
             } else if (delTask instanceof Epic){
                 //Подзадачи Эпика тоже нужно удалить из списка
                 for (SubTask subTask : ((Epic) delTask).getSubTasks()) {
                     taskLists.remove(subTask.getNum());
-                    history.remove(subTask.getNum());
+                    historyManager.remove(subTask.getNum());
                 }
             }
             taskLists.remove(num);
-            history.remove(num);
+            historyManager.remove(num);
         }
     }
 
@@ -150,6 +148,6 @@ public class InMemoryTasksManager implements TaskManager {
     //Возвращает историю просмотренных задач.
     @Override
     public List<Task> history(){
-        return history.getHistory();
+        return historyManager.getHistory();
     }
 }
