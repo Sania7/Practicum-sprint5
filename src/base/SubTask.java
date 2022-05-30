@@ -2,6 +2,9 @@ package base;
 
 import util.TaskType;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class SubTask extends Task {
     // ссылка на родителя Эпик
     private Epic epic;
@@ -16,6 +19,10 @@ public class SubTask extends Task {
     public SubTask(String name, String details, Epic epic) {
         super(name, details, TaskType.SUBTASK);
         this.epic = epic;
+    }
+
+    public SubTask(String name, String details, Epic epic, LocalDateTime startTime, Duration duration) {
+        super(name,details,TaskType.SUBTASK,startTime,duration);
     }
 
     //Получение Эпика

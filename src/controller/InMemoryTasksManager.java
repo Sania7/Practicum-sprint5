@@ -4,14 +4,20 @@ import base.Epic;
 import base.SubTask;
 import base.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class InMemoryTasksManager implements TaskManager {
     protected Map<Integer, Task> taskLists = new HashMap<>();    //Список всех задач
-    //protected InMemoryHistoryManager history;
+
+    protected TreeSet<Task> sortedTaskSet = new TreeSet<>((task1, task2) -> {
+        if(task1.getStartTime() != null && task2.getStartTime() != null) {
+            return task1.getStartTime().compareTo(task2.getStartTime());
+        } else if (task1.getStartTime() == null && task2.getStartTime() == null){
+            return task1.getNum().compareTo(task2.getNum());
+        } else if (task1.getStartTime() == null){
+            return 1;
+        } else return -1;
+    });
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
     public HistoryManager getHistoryManager() {
@@ -53,6 +59,11 @@ public class InMemoryTasksManager implements TaskManager {
         return epic.getSubTasks();
     }
 
+    // список задач отсортированных по дате начала
+    @Override
+    public TreeSet<Task> getPrioritizedTasks() {
+        return sortedTaskSet;
+    }
     //Получение задачи по идентификатору.
     @Override
     public Task getTask(int num){

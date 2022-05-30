@@ -6,6 +6,7 @@ import base.Task;
 
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 public interface TaskManager {
     //Получение списка всех задач (Эпики + Задачи + Подзадачи).
@@ -19,6 +20,10 @@ public interface TaskManager {
 
     //Получение списка всех подзадач определённого эпика.
     List<SubTask> getSubTasks(Epic epic);
+
+    //Получение списка всех задач отсортированных по приоритету (дате начала)
+    TreeSet<Task> getPrioritizedTasks();
+
 
     //Получение задачи по идентификатору.
     Task getTask(int num);
